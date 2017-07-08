@@ -22,3 +22,4 @@ Algorithm for binning heart beats within respiratory periods(Inspiration/Expirat
                   |____________________|________________________|___________________
                           I                         II                    III
                                                   PERIODS
+.
