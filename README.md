@@ -8,18 +8,3 @@ on time.
 
 Algorithm for binning heart beats within respiratory periods(Inspiration/Expiration). Allows easy export to describing latency between beats and total frequency. Useful for determining physiological and chemical treatment conditions and their effects on overall cardiorespiratory rhythm.  
 
-                  Ex.
-                  |
-                  |
-                  |
-                  |
-                  |
-   TIME           |                 __    
-                  |             __                    __                            
-                  |                               __                             __ <---    __ represents a single heart beat
-                  |       __                  __                          __  
-                  | __                    __                      __
-                  |____________________|________________________|___________________
-                          I                         II                    III
-                                                  PERIODS
-.
