@@ -10,14 +10,16 @@ import java.io.Reader;
 import java.text.*;
 
 public class CardioResp{
-   public static void main(String[] args) throws FileNotFoundException, IOException, NumberFormatException, ParseException, ArrayIndexOutOfBoundsException, 
-                                                 ClassNotFoundException{
+   public static void main(String[] args) throws FileNotFoundException, IOException, NumberFormatException, ParseException,
+                                                                    ArrayIndexOutOfBoundsException, ClassNotFoundException{
       
-      String fileLocationRespiration = JOptionPane.showInputDialog("Please enter the file path to your respiration file.\nRight click your file and"
-                                                                   +" select properties, copy and paste the file path in the form of C:\\Path\\NameOfYourFile.txt"
-                                                                   +" \nEx. C:\\User\\Andrew\\Desktop\\Respiration.txt");
-      String fileLocationCardiac = JOptionPane.showInputDialog("Please enter the file path to your cardiac file.\nRight click your file and select properties, "
-                                                               +"copy and paste the file path in the form of C:\\Path\\NameOfYourFile.txt \nEx. C:\\User\\Andrew\\Desktop\\Cardiac.txt");
+      String fileLocationRespiration = JOptionPane.showInputDialog("Please enter the file path to your respiration file.\nRight click your"
+                                                                   +" file and select properties, copy and paste the file path in the form of"
+                                                                   +" C:\\Path\\NameOfYourFile.txt \nEx. C:\\User\\Andrew\\Desktop\\"
+                                                                   +"Respiration.txt");
+      String fileLocationCardiac = JOptionPane.showInputDialog("Please enter the file path to your cardiac file.\nRight click your file and"
+                                                               +" select properties, copy and paste the file path in the form of "
+                                                               +"C:\\Path\\NameOfYourFile.txt \nEx. C:\\User\\Andrew\\Desktop\\Cardiac.txt");
       int countLinesR = countResp(fileLocationRespiration); 
       List<Date> respirationList = processResp(countLinesR, fileLocationRespiration);
       int countLinesC = countCard(fileLocationCardiac);
@@ -25,10 +27,10 @@ public class CardioResp{
       compareTime(cardiacList, respirationList);
      
    }
-
-         
-    public static int countResp(String fileLocationRespiration)throws FileNotFoundException, IOException, NumberFormatException, ParseException, 
-                                                                         ArrayIndexOutOfBoundsException, ClassNotFoundException{
+   //Returns the total number of respiratory periods recorded in the specimen
+   //Respiratory period = Peak inhalation ----> Exhalation --->Peak Inhalation = 1 Period
+    public static int countResp(String fileLocationRespiration)throws  FileNotFoundException, IOException, NumberFormatException, 
+                                                                       ParseException, ArrayIndexOutOfBoundsException,ClassNotFoundException{
       FileReader fileReaderRespiration = new FileReader(fileLocationRespiration);
       BufferedReader bufferedReaderR = new BufferedReader(fileReaderRespiration);
       String lineR = bufferedReaderR.readLine();
@@ -39,9 +41,10 @@ public class CardioResp{
       return countR;
     }
          
-         
-    public static int countCard(String fileLocationCardiac)throws FileNotFoundException, IOException, NumberFormatException, ParseException,
-                                                                       ArrayIndexOutOfBoundsException, ClassNotFoundException{
+    //Counts the total number of cardiac beats
+    //1 full QRS complex recorded = 1 beat = 1 line entry
+    public static int countCard(String fileLocationCardiac)throws  FileNotFoundException, IOException, NumberFormatException, ParseException, 
+                                                                                      ArrayIndexOutOfBoundsException, ClassNotFoundException{
       FileReader fileReaderCardiac = new FileReader(fileLocationCardiac);
       BufferedReader bufferedReaderC = new BufferedReader(fileReaderCardiac);
       String lineC = bufferedReaderC.readLine();
@@ -52,9 +55,12 @@ public class CardioResp{
       return countC;
     }
          
-         
-    public static List<Date> processResp(int countLinesR, String fileLocationRespiration)throws FileNotFoundException, IOException, NumberFormatException, 
-                                                                                   ParseException, ArrayIndexOutOfBoundsException, ClassNotFoundException{
+    //Processes respiratory recordings from respirometer 
+    //Returns timepoints of respiration data as elements of Date array
+    public static List<Date> processResp(int countLinesR, String fileLocationRespiration)throws FileNotFoundException, IOException, 
+                                                                                                NumberFormatException, ParseException, 
+                                                                                                ArrayIndexOutOfBoundsException, 
+                                                                                                ClassNotFoundException{
       FileReader fileReaderRespiration = new FileReader(fileLocationRespiration);
       BufferedReader bufferedReaderR = new BufferedReader(fileReaderRespiration);
       SimpleDateFormat df = new SimpleDateFormat("hh:mm.s");
@@ -68,9 +74,12 @@ public class CardioResp{
       return result;
     }
     
-         
-    public static List<Date> processCard(int countLinesC, String fileLocationCardiac)throws FileNotFoundException, IOException, NumberFormatException, 
-                                                                                    ParseException, ArrayIndexOutOfBoundsException, ClassNotFoundException{
+    //Processes EKG recordings
+    //Returns timepoints of each heart beat as elements of Date array
+    public static List<Date> processCard(int countLinesC, String fileLocationCardiac)throws FileNotFoundException, IOException, 
+                                                                                                NumberFormatException, ParseException, 
+                                                                                                ArrayIndexOutOfBoundsException, 
+                                                                                                ClassNotFoundException{
       FileReader fileReaderCardiac = new FileReader(fileLocationCardiac);
       BufferedReader bufferedReaderC = new BufferedReader(fileReaderCardiac);
       SimpleDateFormat df = new SimpleDateFormat("hh:mm.s");
@@ -84,19 +93,20 @@ public class CardioResp{
       return result;         
     }
          
-         
-    public static void compareTime(List<Date> cardiacList, List<Date> respirationList) throws FileNotFoundException, IOException, NumberFormatException, 
-                                                                                 ParseException, ArrayIndexOutOfBoundsException, ClassNotFoundException{
+    //Defines respiratory periods, bins heartbeats within each period, counts # beats per perdiod
+    //Calculates latency between the start of a respiratory period and subsequent heart beats
+    public static void compareTime(List<Date> cardiacList, List<Date> respirationList) throws FileNotFoundException, IOException, 
+                                                                                                NumberFormatException, ParseException, 
+                                                                                                ArrayIndexOutOfBoundsException, 
+                                                                                                ClassNotFoundException{
       SimpleDateFormat cpuFormat = new SimpleDateFormat("hh:mm:ss");
       SimpleDateFormat myFormat = new SimpleDateFormat("hh:mm.s");
-      //System.out.println("Period,    Respiration Peak,    Cardiac#,    Cardiac Time,    Resp to Beat,");
       System.out.format("%s %30s %20s %20s %20s", "Period", "Respiration Peak", "Cardiac#", "Cardiac Time", "Resp. to Beat\n");
       for (int i = 0; i < respirationList.size(); i++) {
          Date RD1 = respirationList.get(i);
          String time = RD1.toString();
          String [] timeparse = time.split(" ");
          String formatTime = myFormat.format(cpuFormat.parse(timeparse[3]));
-         //System.out.println(i + ",         " + formatTime + (","));
          System.out.printf("%-20d %-20s\n", i, formatTime);
          int periodCount = i;
          String[] units = formatTime.split(":"); 
